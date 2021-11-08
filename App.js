@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet ,Text, View, Button, Image} from 'react-native';
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
+import * as MediaLibrary from 'expo-media-library';
 
 //import io from 'socket.io-client'
 
@@ -20,16 +21,16 @@ export default function App() {
   };
   // Combine stop and start rec into one
   socket.onmessage= function(s) {      
-      alert('got reply '+ s.data);
+      //alert('got reply '+ s.data);
       createTwoButtonAlert(s.data)
       if (s.data == "StartRec") {
-        alert('Recording');
+        //alert('Recording');
         myFunction = () => {
           this.video.press();
         }
       }
       if (s.data == "StopRec") {
-        alert('Stopped Recording');
+        //alert('Stopped Recording');
         myFunction = () => {
           this.video.press();
         }
@@ -64,7 +65,7 @@ export default function App() {
   const takeVideo = async () => {
     if(camera){
         const data = await camera.recordAsync({
-          maxDuration:3
+          maxDuration:10
         })
         setRecord(data.uri);
         console.log(data.uri);
@@ -73,6 +74,14 @@ export default function App() {
 
   const stopVideo = async () => {
     camera.stopRecording();
+  }
+
+  const saveVideo = async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status === "granted") {
+          const asset = await MediaLibrary.createAssetAsync(video);
+          await MediaLibrary.createAlbumAsync("Download", asset, false);
+        } else alert("We need you permission to download this file.");
   }
 
   if (hasCameraPermission === null || hasAudioPermission === null ) {
@@ -121,7 +130,7 @@ export default function App() {
           </Button>
           <Button title="Take video" onPress={() => takeVideo()} />
           <Button title="Stop Video" onPress={() => stopVideo()} />
-          
+          <Button title="Save" onPress={() => stopVideo()} />
     </View>
   );
 }
