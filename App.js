@@ -18,6 +18,7 @@ export default function App() {
   socket.onopen= function() {
       socket.send('hello');
   };
+  // Combine stop and start rec into one
   socket.onmessage= function(s) {      
       alert('got reply '+ s.data);
       createTwoButtonAlert(s.data)
