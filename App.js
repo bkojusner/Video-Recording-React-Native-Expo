@@ -14,16 +14,40 @@ export default function App() {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   
-  socket = new WebSocket('ws://127.0.0.1:3000');
+  socket = new WebSocket('ws://172.20.10.2:3000');
   socket.onopen= function() {
       socket.send('hello');
   };
-  socket.onmessage= function(s) {
+  socket.onmessage= function(s) {      
       alert('got reply '+ s.data);
-      myFunction = () => {
-        this.video.press()
+      createTwoButtonAlert(s.data)
+      if (s.data == "StartRec") {
+        alert('Recording');
+        myFunction = () => {
+          this.video.press();
+        }
       }
+      if (s.data == "StopRec") {
+        alert('Stopped Recording');
+        myFunction = () => {
+          this.video.press();
+        }
+      } 
   };
+
+  const createTwoButtonAlert = (a) =>
+      Alert.alert(
+        "Alert Title",
+        a,
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      );
 
   useEffect(() => {
     (async () => {
