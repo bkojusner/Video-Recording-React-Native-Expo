@@ -14,7 +14,7 @@ export default function App() {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   
-  socket = new WebSocket('ws://192.168.0.59:3000');
+  socket = new WebSocket('wss://tmpherokutest.herokuapp.com');
   socket.onopen= function() {
       socket.send('hello');
   };
