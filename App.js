@@ -3,7 +3,7 @@ import { StyleSheet ,Text, View, Button, Image} from 'react-native';
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 
-
+//import io from 'socket.io-client'
 
 export default function App() {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -14,6 +14,16 @@ export default function App() {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   
+  socket = new WebSocket('ws://127.0.0.1:3000');
+  socket.onopen= function() {
+      socket.send('hello');
+  };
+  socket.onmessage= function(s) {
+      alert('got reply '+ s.data);
+      myFunction = () => {
+        this.video.press()
+      }
+  };
 
   useEffect(() => {
     (async () => {
@@ -29,7 +39,7 @@ export default function App() {
   const takeVideo = async () => {
     if(camera){
         const data = await camera.recordAsync({
-          maxDuration:10
+          maxDuration:3
         })
         setRecord(data.uri);
         console.log(data.uri);
