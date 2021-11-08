@@ -8,6 +8,7 @@ Remaining tasks:
 1. Weird asynchronous thing
 2. Send command to record for x amount of time
 3. Actually have the recording functionality
-4. Have the server work with the computer
-5. Have the computer respond to the server
-6. Actually have a way to save the files after the recording
+4. See how to save the video, save it as a raw file
+5. Have the server work with the computer
+6. Have the computer respond to the server
+7. Actually have a way to save the files after the recording
