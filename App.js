@@ -69,6 +69,7 @@ export default function App() {
         })
         setRecord(data.uri);
         console.log(data.uri);
+        saveVideo(data.uri);
     }
   }
 
@@ -76,12 +77,13 @@ export default function App() {
     camera.stopRecording();
   }
 
-  const saveVideo = async () => {
+  const saveVideo = async (vid) => {
+    alert("We here");
     const { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status === "granted") {
-          const asset = await MediaLibrary.createAssetAsync(video);
-          await MediaLibrary.createAlbumAsync("Download", asset, false);
-        } else alert("We need you permission to download this file.");
+    if (status === "granted") {
+      const asset = await MediaLibrary.createAssetAsync(vid);
+      await MediaLibrary.createAlbumAsync("Download", asset, false);
+    } else alert("We need you permission to download this file.");
   }
 
   if (hasCameraPermission === null || hasAudioPermission === null ) {
@@ -130,7 +132,7 @@ export default function App() {
           </Button>
           <Button title="Take video" onPress={() => takeVideo()} />
           <Button title="Stop Video" onPress={() => stopVideo()} />
-          <Button title="Save" onPress={() => stopVideo()} />
+          <Button title="Save" onPress={() => saveVideo()} />
     </View>
   );
 }
