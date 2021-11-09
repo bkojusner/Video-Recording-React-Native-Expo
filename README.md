@@ -5,10 +5,7 @@ Currently trying to command it through Python Webocket
 Works, deployed on Heroku
 
 Remaining tasks:
-1. Weird asynchronous thing
-2. Send command to record for x amount of time
-3. Actually have the recording functionality
-4. See how to save the video, save it as a raw file
-5. Have the server work with the computer
-6. Have the computer respond to the server
-7. Actually have a way to save the files after the recording
+1. Send command to record for x amount of time
+2. Have the server work with the computer
+3. Have the computer respond to the server
+4. Actually have a way to save the files after the recording
