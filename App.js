@@ -6,27 +6,6 @@ import * as MediaLibrary from 'expo-media-library';
 
 socket = new WebSocket('wss://tmpherokutest.herokuapp.com');
 
-//import io from 'socket.io-client'
-export function connect() {
-  socket.onopen = () => { 
-    socket.send("Hello");
-    alert("Sent Hello");
-  };
-
-  // Combine stop and start rec into one
-  socket.onmessage = (s) => {      
-      alert('Got Reply '+ s.data);
-      if (s.data == "StartRec") {
-        alert('Recording');
-        App.takeVideo();
-      }
-      if (s.data == "StopRec") {
-        App.stopVideo();
-        alert('Stopped Recording');
-      } 
-  };
-}
-
 export default function App() {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -36,7 +15,24 @@ export default function App() {
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
 
-  connect()
+  // Check if server is there
+  socket.onopen = () => { 
+    socket.send("Hello");
+    alert("Sent Hello");
+  };
+
+  // Recording functionality being called from server
+  socket.onmessage = (s) => {      
+      //alert('Got Reply '+ s.data);
+      if (s.data == "StartRec") {
+        alert('Recording');
+        takeVideo();
+      }
+      if (s.data == "StopRec") {
+        alert('Stopped Recording');
+        stopVideo();
+      } 
+  };
 
   useEffect(() => {
     (async () => {
@@ -72,12 +68,15 @@ export default function App() {
     } else alert("We need you permission to download this file.");
   }
 
+  // Checking if permissions were granted
   if (hasCameraPermission === null || hasAudioPermission === null ) {
     return <View />;
   }
   if (hasCameraPermission === false || hasAudioPermission === false) {
     return <Text>No access to camera</Text>;
   }
+
+  // This is where teh buttons and manual functionality lies
   return (
     <View style={{ flex: 1}}>
         <View style={styles.cameraContainer}>
@@ -121,6 +120,7 @@ export default function App() {
   );
 }
 
+// Seems to be the CSS behind it all
 const styles = StyleSheet.create({
   cameraContainer: {
       flex: 1,
