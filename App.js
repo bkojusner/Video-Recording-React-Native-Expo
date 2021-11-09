@@ -4,7 +4,28 @@ import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import * as MediaLibrary from 'expo-media-library';
 
+socket = new WebSocket('wss://tmpherokutest.herokuapp.com');
+
 //import io from 'socket.io-client'
+export function connect() {
+  socket.onopen = () => { 
+    socket.send("Hello");
+    alert("Sent Hello");
+  };
+
+  // Combine stop and start rec into one
+  socket.onmessage = (s) => {      
+      alert('Got Reply '+ s.data);
+      if (s.data == "StartRec") {
+        alert('Recording');
+        App.takeVideo();
+      }
+      if (s.data == "StopRec") {
+        App.stopVideo();
+        alert('Stopped Recording');
+      } 
+  };
+}
 
 export default function App() {
   const [hasAudioPermission, setHasAudioPermission] = useState(null);
@@ -14,42 +35,8 @@ export default function App() {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
-  
-  socket = new WebSocket('wss://tmpherokutest.herokuapp.com');
-  socket.onopen= function() {
-      socket.send('hello');
-  };
-  // Combine stop and start rec into one
-  socket.onmessage= function(s) {      
-      //alert('got reply '+ s.data);
-      createTwoButtonAlert(s.data)
-      if (s.data == "StartRec") {
-        //alert('Recording');
-        myFunction = () => {
-          this.video.press();
-        }
-      }
-      if (s.data == "StopRec") {
-        //alert('Stopped Recording');
-        myFunction = () => {
-          this.video.press();
-        }
-      } 
-  };
 
-  const createTwoButtonAlert = (a) =>
-      Alert.alert(
-        "Alert Title",
-        a,
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ]
-      );
+  connect()
 
   useEffect(() => {
     (async () => {
@@ -78,7 +65,6 @@ export default function App() {
   }
 
   const saveVideo = async (vid) => {
-    alert("We here");
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status === "granted") {
       const asset = await MediaLibrary.createAssetAsync(vid);
@@ -99,7 +85,8 @@ export default function App() {
             ref={ref => setCamera(ref)}
             style={styles.fixedRatio} 
             type={type}
-            ratio={'4:3'} />
+            ratio={'4:3'} 
+            height={100} />
         </View>
         <Video
           ref={video}
@@ -124,15 +111,12 @@ export default function App() {
             title="Flip Video"
             onPress={() => {
               setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
+                type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back
               );
             }}>
-          </Button>
-          <Button title="Take video" onPress={() => takeVideo()} />
-          <Button title="Stop Video" onPress={() => stopVideo()} />
-          <Button title="Save" onPress={() => saveVideo()} />
+        </Button>
+        <Button title="Take video" onPress={() => takeVideo()} />
+        <Button title="Stop Video" onPress={() => stopVideo()} />
     </View>
   );
 }
