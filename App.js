@@ -17,7 +17,7 @@ export default function App() {
 
   // Check if server is there
   socket.onopen = () => { 
-    socket.send("Hello");
+    socket.send("phoneClient");
     alert("Sent Hello");
   };
 
